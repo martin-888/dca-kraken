@@ -23,7 +23,12 @@ const kraken = new ccxt.kraken({
 const placeOrder = async () => {
     const date = new Date();
 
-    if (date.getUTCDay() !== day || date.getUTCHours() !== hour) {
+    if (date.getUTCDay() !== day) {
+        console.log("Not valid day.");
+        return;
+    }
+
+    if (date.getUTCHours() !== hour) {
         console.log("Not valid time.");
         return;
     }
@@ -38,14 +43,14 @@ const placeOrder = async () => {
     const trades = await kraken.fetchMyTrades(symbol, new Date().getTime() - 24*HOUR);
 
     if (trades.find(trade => trade.cost === amount)) {
-        console.log("Trade already placed.")
+        console.log("Order already placed and closed.")
         return;
     }
 
     const orders = await kraken.fetchOpenOrders(symbol, new Date().getTime() - 2*HOUR);
 
     if (orders.length) {
-        console.log("Similar order already exists.")
+        console.log("Similar open order already exists.")
         return;
     }
 
